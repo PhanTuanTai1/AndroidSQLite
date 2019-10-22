@@ -114,6 +114,22 @@ public class MainActivity extends AppCompatActivity {
         edtName.setText("");
     }
     public void Edit(View v){
-       db.update(createObj());
+       if(db.update(createObj()) != -1) {
+           nvs = new ArrayList<>();
+           Cursor c = db.getData("select * from NhanVien");
+           while (c.moveToNext()){
+               NhanVien nv = new NhanVien();
+               nv.setMaNV(c.getInt(c.getColumnIndex("maNV")));
+               nv.setTenNV(c.getString(c.getColumnIndex("tenNV")));
+               nvs.add(nv);
+           }
+           adt = new CustomApdater(this,nvs,R.layout.layout_list_view);
+           listView.setAdapter(adt);
+           //adt.notifyDataSetChanged();
+           Toast.makeText(this, "Updated",Toast.LENGTH_LONG).show();
+       }
+       else {
+           Toast.makeText(this, "Fail",Toast.LENGTH_LONG).show();
+       }
     }
 }
